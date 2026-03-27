@@ -24,3 +24,96 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* ── Responsive simulation layout ────────────────────────────────────────── */
+
+/* Mobile: flex column, scrollable */
+.sim-layout {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex: 1;
+  gap: 1px;
+  background: #1e2530;
+}
+
+/* Desktop: fixed 2×2 grid */
+@media (min-width: 768px) {
+  .sim-layout {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    grid-template-rows: 1fr 200px;
+    overflow: hidden;
+  }
+}
+
+/* ── Simulation graph container ───────────────────────────────────────────── */
+
+.sim-graph {
+  position: relative;
+  overflow: hidden;
+  min-height: 280px;
+}
+
+@media (min-width: 768px) {
+  .sim-graph {
+    min-height: 0;
+  }
+}
+
+/* ── Mini charts row ─────────────────────────────────────────────────────── */
+
+/* Mobile: horizontal scroll */
+.minichart-row {
+  display: flex;
+  gap: 1px;
+  background: #1e2530;
+  overflow-x: auto;
+  overflow-y: hidden;
+  min-height: 160px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.minichart-row > * {
+  flex: 0 0 220px;
+  min-width: 220px;
+}
+
+/* Desktop: 3-column grid, fills row */
+@media (min-width: 768px) {
+  .minichart-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    overflow: visible;
+    min-height: 0;
+    height: 100%;
+  }
+  .minichart-row > * {
+    flex: none;
+    min-width: 0;
+  }
+}
+
+/* ── Event log ───────────────────────────────────────────────────────────── */
+
+.event-log-container {
+  background: #0d1117;
+  overflow-y: auto;
+  max-height: 200px;
+  min-height: 120px;
+}
+
+@media (min-width: 768px) {
+  .event-log-container {
+    max-height: none;
+    height: 100%;
+  }
+}
+
+/* ── Touch-friendly range input ──────────────────────────────────────────── */
+
+input[type="range"] {
+  touch-action: manipulation;
+  min-height: 24px;
+}

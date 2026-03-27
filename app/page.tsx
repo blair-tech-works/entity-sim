@@ -50,38 +50,36 @@ export default function HomePage() {
   const entropyDot = metrics.burden < 30 ? 'active' : metrics.burden < 60 ? 'warn' : 'crit';
 
   return (
-    <main style={{
-      background: '#080a0e',
-      color: '#c9d1d9',
-      fontFamily: "'Space Mono', 'Courier New', monospace",
-      display: 'flex',
-      flexDirection: 'column',
-      height: '100vh',
-      overflow: 'hidden',
-    }}>
-      <header style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        padding: '12px 24px',
-        borderBottom: '1px solid #1e2530',
-        background: '#0d1117',
-        flexShrink: 0,
-      }}>
-        <div style={{ display: 'flex', alignItems: 'baseline', gap: '16px' }}>
+    <main
+      className="flex flex-col min-h-screen md:h-screen md:overflow-hidden"
+      style={{
+        background: '#080a0e',
+        color: '#c9d1d9',
+        fontFamily: "'Space Mono', 'Courier New', monospace",
+      }}
+    >
+      {/* ── Header ─────────────────────────────────────────────────────────── */}
+      <header
+        className="flex flex-col md:flex-row md:items-center md:justify-between flex-shrink-0 gap-2 px-4 md:px-6 py-3"
+        style={{ borderBottom: '1px solid #1e2530', background: '#0d1117' }}
+      >
+        {/* Title */}
+        <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px' }}>
           <span style={{ fontFamily: 'sans-serif', fontWeight: 800, fontSize: '18px', letterSpacing: '0.12em', color: '#e8ff3c', textTransform: 'uppercase' }}>
             ⬡ Entropy
           </span>
-          <span style={{ fontSize: '10px', color: '#4a5568', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+          <span className="hidden sm:inline" style={{ fontSize: '10px', color: '#4a5568', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
             Software Complexity Simulation — 5yr Horizon
           </span>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
+
+        {/* Controls */}
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 md:gap-x-6">
           <span style={{ fontSize: '11px', color: '#4a5568' }}>
-            SIMULATED TIME: <span style={{ color: '#e8ff3c', fontWeight: 700 }}>Year {metrics.simYear.toFixed(1)}, Day {metrics.simDay}</span>
+            SIM: <span style={{ color: '#e8ff3c', fontWeight: 700 }}>Y{metrics.simYear.toFixed(1)} D{metrics.simDay}</span>
           </span>
           <span style={{ fontSize: '11px', color: '#4a5568' }}>
-            REAL TIME: <span style={{ color: '#e8ff3c', fontWeight: 700 }}>{mins}:{secs.toString().padStart(2, '0')}</span>
+            REAL: <span style={{ color: '#e8ff3c', fontWeight: 700 }}>{mins}:{secs.toString().padStart(2, '0')}</span>
           </span>
           <button
             onClick={handleStartPause}
@@ -94,13 +92,17 @@ export default function HomePage() {
               background: 'transparent',
               color: status === 'running' ? '#ff3c3c' : '#e8ff3c',
               border: `1px solid ${status === 'running' ? '#ff3c3c' : '#e8ff3c'}`,
-              padding: '6px 18px',
+              padding: '8px 18px',
               cursor: 'pointer',
+              minHeight: '40px',
+              touchAction: 'manipulation',
             }}
           >
             {btnLabel}
           </button>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+
+          {/* Build/Maintain slider — full width on mobile */}
+          <div className="flex items-center gap-2 w-full md:w-auto">
             <span style={{ fontSize: '9px', color: '#4a5568', letterSpacing: '0.08em', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>
               BUILD
             </span>
@@ -114,11 +116,8 @@ export default function HomePage() {
                 setSliderValue(v);
                 setMaintainRatio(v / 100);
               }}
-              style={{
-                width: 100,
-                accentColor: '#e8ff3c',
-                cursor: 'pointer',
-              }}
+              className="flex-1 md:w-24"
+              style={{ accentColor: '#e8ff3c', cursor: 'pointer' }}
             />
             <span style={{ fontSize: '9px', color: '#4a5568', letterSpacing: '0.08em', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>
               MAINTAIN
@@ -130,16 +129,10 @@ export default function HomePage() {
         </div>
       </header>
 
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: '1fr 340px',
-        gridTemplateRows: '1fr 200px',
-        gap: '1px',
-        flex: 1,
-        background: '#1e2530',
-        overflow: 'hidden',
-      }}>
-        <div style={{ background: '#0d1117', position: 'relative', overflow: 'hidden' }}>
+      {/* ── Main grid ──────────────────────────────────────────────────────── */}
+      <div className="sim-layout">
+        {/* Graph canvas */}
+        <div className="sim-graph" style={{ background: '#0d1117' }}>
           <div style={{ position: 'absolute', top: 12, left: 14, fontSize: '9px', letterSpacing: '0.14em', textTransform: 'uppercase', color: '#4a5568', zIndex: 2, pointerEvents: 'none' }}>
             NODE GRAPH — SOFTWARE COMPONENTS
           </div>
@@ -161,11 +154,13 @@ export default function HomePage() {
           </div>
         </div>
 
+        {/* Metrics panel */}
         <div style={{ background: '#0d1117', overflow: 'hidden' }}>
           <MetricsPanel metrics={metrics} />
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1px', background: '#1e2530' }}>
+        {/* Mini charts — horizontal scroll on mobile, grid on desktop */}
+        <div className="minichart-row">
           <MiniChart
             title="Value vs Entropy Over Time"
             datasets={[
@@ -187,25 +182,25 @@ export default function HomePage() {
           />
         </div>
 
+        {/* Event log */}
         <EventLog entries={logs} />
       </div>
 
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: 20,
-        padding: '6px 24px',
-        borderTop: '1px solid #1e2530',
-        background: '#0d1117',
-        flexShrink: 0,
-        fontSize: '9px',
-        letterSpacing: '0.1em',
-        textTransform: 'uppercase',
-      }}>
+      {/* ── Status bar ─────────────────────────────────────────────────────── */}
+      <div
+        className="flex flex-wrap items-center gap-x-5 gap-y-1 px-4 md:px-6 py-2 flex-shrink-0"
+        style={{
+          borderTop: '1px solid #1e2530',
+          background: '#0d1117',
+          fontSize: '9px',
+          letterSpacing: '0.1em',
+          textTransform: 'uppercase',
+        }}
+      >
         <StatusItem dot={status === 'running' ? 'active' : status === 'paused' ? 'warn' : 'idle'} label={status.toUpperCase()} />
         <StatusItem dot={roiDot} label={`ROI: ${metrics.roi >= 1.5 ? 'POSITIVE' : metrics.roi >= 1.0 ? 'MARGINAL' : 'NEGATIVE'} (${metrics.roi.toFixed(1)}x)`} />
         <StatusItem dot={entropyDot} label={`ENTROPY: ${metrics.burden < 30 ? 'NOMINAL' : metrics.burden < 60 ? 'ELEVATED' : 'CRITICAL'}`} />
-        <span style={{ marginLeft: 'auto', color: '#4a5568' }}>ENTROPY SIMULATION v1.0 — SOFTWARE ENTROPY MODEL</span>
+        <span className="hidden md:inline" style={{ marginLeft: 'auto', color: '#4a5568' }}>ENTROPY SIMULATION v1.0 — SOFTWARE ENTROPY MODEL</span>
       </div>
     </main>
   );
