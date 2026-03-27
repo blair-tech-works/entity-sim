@@ -1,0 +1,14 @@
+name: Build & Push to AR
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  docker:
+    uses: blair-tech-works/shared-workflows/.github/workflows/docker-build.yml@main
+    with:
+      image-name: entity-sim
+    secrets:
+      GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
