@@ -15,7 +15,7 @@ export default function MetricsPanel({ metrics }: MetricsPanelProps) {
   const valueMax = 5000;
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+    <div className="md:h-full" style={{ display: 'flex', flexDirection: 'column' }}>
       <MetricBlock
         label="Total Functionality (Value)"
         value={Math.floor(totalValue).toLocaleString()}
@@ -68,7 +68,7 @@ interface MetricBlockProps {
 function MetricBlock({ label, value, sub, color, barWidth, noBar }: MetricBlockProps) {
   return (
     <div style={{
-      flex: 1,
+      flex: '1 0 auto',
       padding: '14px 18px',
       borderBottom: '1px solid #1e2530',
       display: 'flex',

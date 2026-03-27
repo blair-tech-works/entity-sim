@@ -15,10 +15,7 @@ const levelStyles: Record<LogEntry['level'], React.CSSProperties> = {
 
 export default function EventLog({ entries }: EventLogProps) {
   return (
-    <div style={{
-      background: '#0d1117',
-      height: '100%',
-      overflowY: 'auto',
+    <div className="event-log-container" style={{
       padding: '10px 14px',
       boxSizing: 'border-box',
     }}>
