@@ -4,7 +4,7 @@ import { useRef, useState, useCallback, useEffect } from 'react';
 import type { SimState, SimConfig, LogEntry } from '../types/simulation';
 import {
   DEFAULT_CONFIG, WORKER_NAMES, PHASE_LABELS, MAINTAIN_RATIO_DEFAULT, MAINTENANCE_ENTROPY_REDUCTION,
-  BUGS_PER_FEATURE, BUG_FIX_REGRESSION_RATE, TECH_DEBT_PRODUCTIVITY_LOSS, PHASE_CONFIG,
+  BUGS_PER_FEATURE, BUG_FIX_REGRESSION_RATE, PHASE_CONFIG,
 } from '../lib/constants';
 import {
   buildInitialState,
@@ -86,6 +86,9 @@ export function useSimulation(config: SimConfig = DEFAULT_CONFIG) {
         newPhase === 3 ? 'crit' : 'warn');
     }
 
+    const phaseConf = PHASE_CONFIG[s.phase] ?? PHASE_CONFIG[0];
+    const maintainRatio = maintainRatioRef.current;
+
     // Worker actions
     s.workers.forEach(w => {
       const node = s.nodes.find(n => n.id === w.nodeId);
@@ -99,11 +102,12 @@ export function useSimulation(config: SimConfig = DEFAULT_CONFIG) {
       w.busyFor = Math.max(0, w.busyFor - 1);
       if (w.busyFor > 0) return;
 
-      // addProb: base probability a worker acts; uses empirical PHASE_CONFIG featureProb
-      const phaseConf = PHASE_CONFIG[s.phase] ?? PHASE_CONFIG[0];
-      const addProb = (phaseConf.featureProb / 10) * 0.7; // scaled to per-tick probability
+      // Scale phase featureProb to per-tick probability
+      const addProb = (phaseConf.featureProb / 10) * 0.7;
+      // Apply tech debt productivity loss in phases 2+: workers take longer (Besker et al., 2019)
+      const debtSlowdown = 1 + phaseConf.productivityLoss;
+
       if (Math.random() < addProb) {
-        const maintainRatio = maintainRatioRef.current;
         if (Math.random() >= maintainRatio) {
           // BUILD: ship a new feature (using empirical phase config)
           node.features++;
@@ -114,32 +118,35 @@ export function useSimulation(config: SimConfig = DEFAULT_CONFIG) {
           node.targetRadius = 14 + Math.sqrt(node.features) * 4;
           s.totalValue += featureValue;
           s.totalCost += featureValue * 0.7;
-          // Tech debt slows velocity in later phases (Besker et al., 2019)
-          const debtSlowdown = s.phase >= 2 ? (1 + TECH_DEBT_PRODUCTIVITY_LOSS) : 1;
           w.busyFor = (30 + Math.random() * 60) * debtSlowdown;
           w.busy = true;
           node.lastActivity = s.tick;
-          if (Math.random() < 0.08) {
+
+          // BUGS_PER_FEATURE: 50% chance each feature introduces a bug
+          // Source: Capers Jones research
+          if (Math.random() < BUGS_PER_FEATURE) {
+            const bugEntropy = 3 + Math.random() * 5;
+            node.entropy += bugEntropy;
+            s.totalEntropy += bugEntropy;
+            node.issues++;
+            if (Math.random() < 0.15) {
+              addLog(
+                `${w.name} shipped feature on [${node.name}] — bug introduced! (+${bugEntropy.toFixed(1)} entropy)`,
+                'warn'
+              );
+            }
+          } else if (Math.random() < 0.08) {
             addLog(
               `${w.name} shipped feature on [${node.name}] (+${featureValue.toFixed(0)} val, +${featureEntropy.toFixed(1)} entropy)`,
               'good'
             );
           }
-          // Bug introduction: Capers Jones — 0.5 bugs per feature
-          if (Math.random() < BUGS_PER_FEATURE) {
-            const bugTarget = s.nodes[Math.floor(Math.random() * s.nodes.length)];
-            const bugEntropy = 3 + Math.random() * 6;
-            bugTarget.entropy += bugEntropy;
-            bugTarget.issues++;
-            s.totalEntropy += bugEntropy;
-            if (Math.random() < 0.15) {
-              addLog(`BUG introduced in [${bugTarget.name}] from [${node.name}] change (+${bugEntropy.toFixed(1)} entropy)`, 'warn');
-            }
-          }
         } else {
-          // MAINTAIN: pick a random node and reduce its entropy
+          // MAINTAIN: pick a random node and reduce its entropy (bug fix)
           const targetNode = s.nodes[Math.floor(Math.random() * s.nodes.length)];
-          // Bug fix regression: Capers Jones — 7% of fixes introduce new bugs
+
+          // BUG_FIX_REGRESSION_RATE: 7% chance a fix introduces a new bug
+          // Source: Capers Jones research
           if (Math.random() < BUG_FIX_REGRESSION_RATE) {
             const regressionEntropy = 2 + Math.random() * 4;
             targetNode.entropy += regressionEntropy;
@@ -160,9 +167,7 @@ export function useSimulation(config: SimConfig = DEFAULT_CONFIG) {
               );
             }
           }
-          // Tech debt slows maintenance too in later phases
-          const maintDebtSlowdown = s.phase >= 2 ? (1 + TECH_DEBT_PRODUCTIVITY_LOSS) : 1;
-          w.busyFor = (30 + Math.random() * 60) * maintDebtSlowdown;
+          w.busyFor = (30 + Math.random() * 60) * debtSlowdown;
           w.busy = true;
           targetNode.lastActivity = s.tick;
         }
@@ -183,9 +188,14 @@ export function useSimulation(config: SimConfig = DEFAULT_CONFIG) {
     });
 
     // Node entropy decay
+    // If user maintenance < natural phase maintenance ratio, entropy grows faster
+    const maintenanceDeficit = Math.max(0, phaseConf.naturalMaintainRatio - maintainRatio);
+    const entropyDeficitMult = 1 + maintenanceDeficit * 2; // up to 2x extra growth if fully neglected
+
     s.nodes.forEach(n => {
       const couplingFactor = 1 + n.connections * config.couplingEntropyMult * 0.1;
-      const entropyGrowth = config.entropyRateBase * n.features * couplingFactor * (1 + s.phase * 0.3);
+      const entropyGrowth = config.entropyRateBase * n.features * couplingFactor
+        * phaseConf.entropyMult * entropyDeficitMult;
       n.entropy += entropyGrowth;
       s.totalEntropy += entropyGrowth;
 

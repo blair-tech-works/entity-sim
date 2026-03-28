@@ -250,6 +250,7 @@ export default function HomePage() {
         <StatusItem dot={entropyDot} label={`ENTROPY: ${metrics.burden < 30 ? 'NOMINAL' : metrics.burden < 60 ? 'ELEVATED' : 'CRITICAL'}`} />
         <span className="hidden md:inline" style={{ marginLeft: 'auto', color: '#4a5568' }}>ENTROPY SIMULATION v1.0 — SOFTWARE ENTROPY MODEL</span>
       </div>
+
     </main>
   );
 }
