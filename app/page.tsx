@@ -52,8 +52,11 @@ export default function HomePage() {
 
   return (
     <main
-      className="flex flex-col min-h-screen md:h-screen md:overflow-hidden"
       style={{
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100vh',
+        overflow: 'hidden',
         background: '#080a0e',
         color: '#c9d1d9',
         fontFamily: "'Space Mono', 'Courier New', monospace",
@@ -61,52 +64,59 @@ export default function HomePage() {
     >
       {/* ── Header ─────────────────────────────────────────────────────────── */}
       <header
-        className="flex flex-col md:flex-row md:items-center md:justify-between flex-shrink-0 gap-2 px-4 md:px-6 py-3"
-        style={{ borderBottom: '1px solid #1e2530', background: '#0d1117' }}
+        style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: '8px',
+          padding: '8px 16px',
+          borderBottom: '1px solid #1e2530',
+          background: '#0d1117',
+          flexShrink: 0,
+        }}
       >
         {/* Title */}
-        <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px' }}>
-          <span style={{ fontFamily: 'sans-serif', fontWeight: 800, fontSize: '18px', letterSpacing: '0.12em', color: '#e8ff3c', textTransform: 'uppercase' }}>
+        <div style={{ display: 'flex', alignItems: 'baseline', gap: '10px' }}>
+          <span style={{ fontFamily: 'sans-serif', fontWeight: 800, fontSize: '16px', letterSpacing: '0.12em', color: '#e8ff3c', textTransform: 'uppercase' }}>
             ⬡ Entropy
           </span>
-          <span className="hidden sm:inline" style={{ fontSize: '10px', color: '#4a5568', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
-            Software Complexity Simulation — 5yr Horizon
+          <span style={{ fontSize: '9px', color: '#4a5568', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+            5yr Horizon
           </span>
         </div>
 
         {/* Controls */}
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 md:gap-x-6">
-          <span style={{ fontSize: '11px', color: '#4a5568' }}>
-            SIM: <span style={{ color: '#e8ff3c', fontWeight: 700 }}>Y{metrics.simYear.toFixed(1)} D{metrics.simDay}</span>
+        <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '12px' }}>
+          <span style={{ fontSize: '10px', color: '#4a5568' }}>
+            Y<span style={{ color: '#e8ff3c', fontWeight: 700 }}>{metrics.simYear.toFixed(1)}</span>{' '}
+            D<span style={{ color: '#e8ff3c', fontWeight: 700 }}>{metrics.simDay}</span>
           </span>
-          <span style={{ fontSize: '11px', color: '#4a5568' }}>
-            REAL: <span style={{ color: '#e8ff3c', fontWeight: 700 }}>{mins}:{secs.toString().padStart(2, '0')}</span>
+          <span style={{ fontSize: '10px', color: '#4a5568' }}>
+            <span style={{ color: '#e8ff3c', fontWeight: 700 }}>{mins}:{secs.toString().padStart(2, '0')}</span>
           </span>
           <button
             onClick={handleStartPause}
             style={{
               fontFamily: 'monospace',
-              fontSize: '11px',
+              fontSize: '10px',
               fontWeight: 700,
               letterSpacing: '0.1em',
               textTransform: 'uppercase',
               background: 'transparent',
               color: status === 'running' ? '#ff3c3c' : '#e8ff3c',
               border: `1px solid ${status === 'running' ? '#ff3c3c' : '#e8ff3c'}`,
-              padding: '8px 18px',
+              padding: '6px 14px',
               cursor: 'pointer',
-              minHeight: '40px',
               touchAction: 'manipulation',
             }}
           >
             {btnLabel}
           </button>
 
-          {/* Build/Maintain slider — full width on mobile */}
-          <div className="flex items-center gap-2 w-full md:w-auto">
-            <span style={{ fontSize: '9px', color: '#4a5568', letterSpacing: '0.08em', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>
-              BUILD
-            </span>
+          {/* Build/Maintain slider */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <span style={{ fontSize: '8px', color: '#4a5568', letterSpacing: '0.08em', textTransform: 'uppercase' }}>BLD</span>
             <input
               type="range"
               min={0}
@@ -117,53 +127,48 @@ export default function HomePage() {
                 setSliderValue(v);
                 setMaintainRatio(v / 100);
               }}
-              className="flex-1 md:w-24"
-              style={{ accentColor: '#e8ff3c', cursor: 'pointer' }}
+              style={{ width: '80px', accentColor: '#e8ff3c', cursor: 'pointer' }}
             />
-            <span style={{ fontSize: '9px', color: '#4a5568', letterSpacing: '0.08em', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>
-              MAINTAIN
-            </span>
-            <span style={{ fontSize: '10px', color: '#e8ff3c', fontWeight: 700, minWidth: 32, textAlign: 'center' }}>
+            <span style={{ fontSize: '8px', color: '#4a5568', letterSpacing: '0.08em', textTransform: 'uppercase' }}>MTN</span>
+            <span style={{ fontSize: '9px', color: '#e8ff3c', fontWeight: 700, minWidth: 28, textAlign: 'center' }}>
               {sliderValue}%
             </span>
           </div>
         </div>
       </header>
 
-      {/* ── Main grid ──────────────────────────────────────────────────────── */}
+      {/* ── Content: flex column, graph takes remaining space ───────────── */}
       <div className="sim-layout">
-        {/* Graph canvas */}
+        {/* Graph canvas — flex:1, fills all remaining space */}
         <div className="sim-graph" style={{ background: '#0d1117' }}>
-          <div style={{ position: 'absolute', top: 12, left: 14, fontSize: '9px', letterSpacing: '0.14em', textTransform: 'uppercase', color: '#4a5568', zIndex: 2, pointerEvents: 'none' }}>
-            NODE GRAPH — SOFTWARE COMPONENTS
+          <div style={{ position: 'absolute', top: 8, left: 10, fontSize: '8px', letterSpacing: '0.14em', textTransform: 'uppercase', color: '#4a5568', zIndex: 2, pointerEvents: 'none' }}>
+            NODE GRAPH
           </div>
           <GraphCanvas ref={graphRef} getState={getState} running={status === 'running'} />
           <PhaseBanner onRegister={onPhaseBanner} />
-          <div style={{ position: 'absolute', bottom: 14, right: 14, display: 'flex', flexDirection: 'column', gap: 5 }}>
+          <div style={{ position: 'absolute', bottom: 10, right: 10, display: 'flex', flexDirection: 'column', gap: 4 }}>
             {[
-              { color: '#3cb8ff', label: 'New Component' },
+              { color: '#3cb8ff', label: 'New' },
               { color: '#3cff8a', label: 'Healthy' },
-              { color: '#e8ff3c', label: 'Moderate Debt' },
-              { color: '#ff8c3c', label: 'High Entropy' },
-              { color: '#ff3c3c', label: 'Critical' },
+              { color: '#e8ff3c', label: 'Debt' },
+              { color: '#ff8c3c', label: 'High' },
+              { color: '#ff3c3c', label: 'Crit' },
             ].map(({ color, label }) => (
-              <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 7, fontSize: 9, color: '#4a5568' }}>
-                <div style={{ width: 8, height: 8, borderRadius: '50%', background: color, flexShrink: 0 }} />
+              <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 8, color: '#4a5568' }}>
+                <div style={{ width: 6, height: 6, borderRadius: '50%', background: color, flexShrink: 0 }} />
                 {label}
               </div>
             ))}
           </div>
         </div>
 
-        {/* Metrics panel */}
-        <div style={{ background: '#0d1117', overflow: 'hidden' }}>
-          <MetricsPanel metrics={metrics} />
-        </div>
+        {/* Metrics — always a compact horizontal strip */}
+        <MetricsPanel metrics={metrics} />
 
-        {/* Mini charts — horizontal scroll on mobile, grid on desktop */}
-        <div className="minichart-row">
+        {/* Charts — 3 equal columns, fixed height */}
+        <div className="chart-row">
           <MiniChart
-            title="Value vs Entropy Over Time"
+            title="Value vs Entropy"
             datasets={[
               { data: history.value, color: '#3cff8a' },
               { data: history.entropy, color: '#ff8c3c' },
@@ -171,33 +176,33 @@ export default function HomePage() {
             crossoverLabel="CROSSOVER"
           />
           <MiniChart
-            title="ROI Curve"
+            title="ROI"
             datasets={[{ data: history.roi, color: '#3cb8ff' }]}
             showBreakevenLine
           />
           <MiniChart
-            title="Maintenance Burden %"
+            title="Burden %"
             datasets={[{ data: history.burden, color: '#ff3c3c' }]}
             yMax={100}
             warningLineY={50}
           />
         </div>
 
-        {/* Event log */}
+        {/* Event log — fixed height, scrollable */}
         <EventLog entries={logs} />
       </div>
 
-      {/* ── References panel ──────────────────────────────────────────────── */}
+      {/* ── References (collapsed by default) ──────────────────────────── */}
       <div style={{ background: '#0d1117', borderTop: '1px solid #1e2530', flexShrink: 0 }}>
         <button
           onClick={() => setShowRefs(r => !r)}
           style={{
             width: '100%',
-            padding: '8px 24px',
+            padding: '4px 16px',
             background: 'transparent',
             border: 'none',
             color: '#4a5568',
-            fontSize: '10px',
+            fontSize: '9px',
             letterSpacing: '0.1em',
             textTransform: 'uppercase',
             cursor: 'pointer',
@@ -205,21 +210,21 @@ export default function HomePage() {
             fontFamily: 'monospace',
           }}
         >
-          {showRefs ? '▾' : '▸'} Research References
+          {showRefs ? '▾' : '▸'} Refs
         </button>
         {showRefs && (
           <div style={{
-            padding: '12px 24px 16px',
+            padding: '8px 16px 12px',
             background: '#18181b',
             borderTop: '1px solid #27272a',
-            fontSize: '11px',
-            lineHeight: 1.7,
+            fontSize: '10px',
+            lineHeight: 1.6,
             color: '#a1a1aa',
           }}>
-            <div style={{ fontWeight: 700, fontSize: '10px', letterSpacing: '0.12em', textTransform: 'uppercase', color: '#e8ff3c', marginBottom: 10 }}>
+            <div style={{ fontWeight: 700, fontSize: '9px', letterSpacing: '0.12em', textTransform: 'uppercase', color: '#e8ff3c', marginBottom: 6 }}>
               DATA-DRIVEN SIMULATION
             </div>
-            <ul style={{ margin: 0, paddingLeft: 18, listStyleType: 'disc' }}>
+            <ul style={{ margin: 0, paddingLeft: 16, listStyleType: 'disc' }}>
               <li><strong style={{ color: '#c9d1d9' }}>Defect rates:</strong> Capers Jones — 0.5 bugs/feature, 7% fix regression</li>
               <li><strong style={{ color: '#c9d1d9' }}>Maintenance:</strong> Gartner — grows from 15% to 35% over lifecycle</li>
               <li><strong style={{ color: '#c9d1d9' }}>Productivity:</strong> Chalmers University (Besker et al., 2019) — 23% loss to tech debt</li>
@@ -234,21 +239,26 @@ export default function HomePage() {
         )}
       </div>
 
-      {/* ── Status bar ─────────────────────────────────────────────────────── */}
+      {/* ── Status bar ─────────────────────────────────────────────────── */}
       <div
-        className="flex flex-wrap items-center gap-x-5 gap-y-1 px-4 md:px-6 py-2 flex-shrink-0"
         style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          alignItems: 'center',
+          gap: '12px',
+          padding: '4px 16px',
           borderTop: '1px solid #1e2530',
           background: '#0d1117',
-          fontSize: '9px',
+          fontSize: '8px',
           letterSpacing: '0.1em',
           textTransform: 'uppercase',
+          flexShrink: 0,
         }}
       >
         <StatusItem dot={status === 'running' ? 'active' : status === 'paused' ? 'warn' : 'idle'} label={status.toUpperCase()} />
-        <StatusItem dot={roiDot} label={`ROI: ${metrics.roi >= 1.5 ? 'POSITIVE' : metrics.roi >= 1.0 ? 'MARGINAL' : 'NEGATIVE'} (${metrics.roi.toFixed(1)}x)`} />
-        <StatusItem dot={entropyDot} label={`ENTROPY: ${metrics.burden < 30 ? 'NOMINAL' : metrics.burden < 60 ? 'ELEVATED' : 'CRITICAL'}`} />
-        <span className="hidden md:inline" style={{ marginLeft: 'auto', color: '#4a5568' }}>ENTROPY SIMULATION v{process.env.NEXT_PUBLIC_APP_VERSION ?? '?'} — SOFTWARE ENTROPY MODEL</span>
+        <StatusItem dot={roiDot} label={`ROI ${metrics.roi.toFixed(1)}x`} />
+        <StatusItem dot={entropyDot} label={`BURDEN ${metrics.burden.toFixed(0)}%`} />
+        <span style={{ marginLeft: 'auto', color: '#4a5568' }}>v{process.env.NEXT_PUBLIC_APP_VERSION ?? '?'}</span>
       </div>
     </main>
   );
@@ -257,11 +267,11 @@ export default function HomePage() {
 function StatusItem({ dot, label }: { dot: string; label: string }) {
   const color = dot === 'active' ? '#3cff8a' : dot === 'warn' ? '#ff8c3c' : dot === 'crit' ? '#ff3c3c' : '#4a5568';
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: '#4a5568' }}>
+    <div style={{ display: 'flex', alignItems: 'center', gap: 5, color: '#4a5568' }}>
       <div style={{
-        width: 6, height: 6, borderRadius: '50%',
+        width: 5, height: 5, borderRadius: '50%',
         background: color,
-        boxShadow: dot !== 'idle' ? `0 0 6px ${color}` : 'none',
+        boxShadow: dot !== 'idle' ? `0 0 5px ${color}` : 'none',
       }} />
       <span>{label}</span>
     </div>
