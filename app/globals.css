@@ -38,8 +38,8 @@ body {
   background: #1e2530;
 }
 
-/* Desktop: fixed 2×2 grid — min-height:0 is critical to allow fr rows to shrink */
-@media (min-width: 768px) {
+/* Desktop (≥1024px): fixed 2×2 grid — iPads get stacked mobile layout */
+@media (min-width: 1024px) {
   .sim-layout {
     display: grid;
     grid-template-columns: 1fr 340px;
@@ -57,7 +57,7 @@ body {
   min-height: 280px;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
   .sim-graph {
     min-height: 0;
     overflow: hidden;
@@ -83,7 +83,7 @@ body {
 }
 
 /* Desktop: 3-column grid, fills row */
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
   .minichart-row {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
@@ -107,7 +107,7 @@ body {
   min-height: 120px;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
   .event-log-container {
     max-height: none;
     min-height: 0;
