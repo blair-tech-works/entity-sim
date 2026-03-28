@@ -24,3 +24,26 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* ── Desktop: 2-column grid with controlled row proportions ── */
+.sim-grid {
+  /* minHeight: 0 is set inline; these provide the responsive override base */
+}
+
+/* ── Mobile (<768px): stack vertically, allow scroll ── */
+@media (max-width: 767px) {
+  main {
+    height: auto !important;
+    min-height: 100dvh;
+    overflow: visible !important;
+    overflow-y: auto !important;
+  }
+
+  .sim-grid {
+    grid-template-columns: 1fr !important;
+    grid-template-rows: 70vw auto auto auto !important;
+    overflow: visible !important;
+    height: auto !important;
+    flex: none !important;
+  }
+}

@@ -130,12 +130,13 @@ export default function HomePage() {
         </div>
       </header>
 
-      <div style={{
+      <div className="sim-grid" style={{
         display: 'grid',
         gridTemplateColumns: '1fr 340px',
-        gridTemplateRows: '1fr 200px',
+        gridTemplateRows: '1fr 160px',
         gap: '1px',
         flex: 1,
+        minHeight: 0,
         background: '#1e2530',
         overflow: 'hidden',
       }}>
