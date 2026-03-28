@@ -15,6 +15,7 @@ export default function HomePage() {
   const [realElapsed, setRealElapsed] = useState(0);
   const realStartRef = useRef<number>(0);
   const [sliderValue, setSliderValue] = useState(Math.round(maintainRatio * 100));
+  const [showRefs, setShowRefs] = useState(false);
 
   useEffect(() => {
     if (status === 'running') {
@@ -184,6 +185,53 @@ export default function HomePage() {
 
         {/* Event log */}
         <EventLog entries={logs} />
+      </div>
+
+      {/* ── References panel ──────────────────────────────────────────────── */}
+      <div style={{ background: '#0d1117', borderTop: '1px solid #1e2530', flexShrink: 0 }}>
+        <button
+          onClick={() => setShowRefs(r => !r)}
+          style={{
+            width: '100%',
+            padding: '8px 24px',
+            background: 'transparent',
+            border: 'none',
+            color: '#4a5568',
+            fontSize: '10px',
+            letterSpacing: '0.1em',
+            textTransform: 'uppercase',
+            cursor: 'pointer',
+            textAlign: 'left',
+            fontFamily: 'monospace',
+          }}
+        >
+          {showRefs ? '▾' : '▸'} Research References
+        </button>
+        {showRefs && (
+          <div style={{
+            padding: '12px 24px 16px',
+            background: '#18181b',
+            borderTop: '1px solid #27272a',
+            fontSize: '11px',
+            lineHeight: 1.7,
+            color: '#a1a1aa',
+          }}>
+            <div style={{ fontWeight: 700, fontSize: '10px', letterSpacing: '0.12em', textTransform: 'uppercase', color: '#e8ff3c', marginBottom: 10 }}>
+              DATA-DRIVEN SIMULATION
+            </div>
+            <ul style={{ margin: 0, paddingLeft: 18, listStyleType: 'disc' }}>
+              <li><strong style={{ color: '#c9d1d9' }}>Defect rates:</strong> Capers Jones — 0.5 bugs/feature, 7% fix regression</li>
+              <li><strong style={{ color: '#c9d1d9' }}>Maintenance:</strong> Gartner — grows from 15% to 35% over lifecycle</li>
+              <li><strong style={{ color: '#c9d1d9' }}>Productivity:</strong> Chalmers University (Besker et al., 2019) — 23% loss to tech debt</li>
+              <li><strong style={{ color: '#c9d1d9' }}>Code growth:</strong> Herraiz et al. — codebases double every 42 months</li>
+              <li><strong style={{ color: '#c9d1d9' }}>Defect density:</strong> IEEE (109 OSS projects) — 7.47 defects/KLOC mean</li>
+              <li><strong style={{ color: '#c9d1d9' }}>Entropy:</strong> ArXiv 2504.18511 — 0.54 correlation entropy↔defects</li>
+              <li><strong style={{ color: '#c9d1d9' }}>Performance:</strong> DORA/Accelerate — elite: &lt;5% vs low: 46-60% failure rate</li>
+              <li><strong style={{ color: '#c9d1d9' }}>Datasets:</strong> SmartSHARK (38+ Apache projects), Public JIRA (2.7M issues)</li>
+              <li><strong style={{ color: '#c9d1d9' }}>Time allocation:</strong> Stripe Developer Coefficient — 42% on tech debt</li>
+            </ul>
+          </div>
+        )}
       </div>
 
       {/* ── Status bar ─────────────────────────────────────────────────────── */}
