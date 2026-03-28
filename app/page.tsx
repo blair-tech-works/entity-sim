@@ -248,7 +248,7 @@ export default function HomePage() {
         <StatusItem dot={status === 'running' ? 'active' : status === 'paused' ? 'warn' : 'idle'} label={status.toUpperCase()} />
         <StatusItem dot={roiDot} label={`ROI: ${metrics.roi >= 1.5 ? 'POSITIVE' : metrics.roi >= 1.0 ? 'MARGINAL' : 'NEGATIVE'} (${metrics.roi.toFixed(1)}x)`} />
         <StatusItem dot={entropyDot} label={`ENTROPY: ${metrics.burden < 30 ? 'NOMINAL' : metrics.burden < 60 ? 'ELEVATED' : 'CRITICAL'}`} />
-        <span className="hidden md:inline" style={{ marginLeft: 'auto', color: '#4a5568' }}>ENTROPY SIMULATION v1.0 — SOFTWARE ENTROPY MODEL</span>
+        <span className="hidden md:inline" style={{ marginLeft: 'auto', color: '#4a5568' }}>ENTROPY SIMULATION v{process.env.NEXT_PUBLIC_APP_VERSION ?? '?'} — SOFTWARE ENTROPY MODEL</span>
       </div>
     </main>
   );
