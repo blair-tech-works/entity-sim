@@ -52,7 +52,7 @@ export default function HomePage() {
 
   return (
     <main
-      className="flex flex-col min-h-screen lg:h-screen lg:overflow-hidden"
+      className="flex flex-col min-h-screen md:h-screen md:overflow-hidden"
       style={{
         background: '#080a0e',
         color: '#c9d1d9',
@@ -61,7 +61,7 @@ export default function HomePage() {
     >
       {/* ── Header ─────────────────────────────────────────────────────────── */}
       <header
-        className="flex flex-col lg:flex-row lg:items-center lg:justify-between flex-shrink-0 gap-2 px-4 lg:px-6 py-3"
+        className="flex flex-col md:flex-row md:items-center md:justify-between flex-shrink-0 gap-2 px-4 md:px-6 py-3"
         style={{ borderBottom: '1px solid #1e2530', background: '#0d1117' }}
       >
         {/* Title */}
@@ -75,7 +75,7 @@ export default function HomePage() {
         </div>
 
         {/* Controls */}
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 lg:gap-x-6">
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 md:gap-x-6">
           <span style={{ fontSize: '11px', color: '#4a5568' }}>
             SIM: <span style={{ color: '#e8ff3c', fontWeight: 700 }}>Y{metrics.simYear.toFixed(1)} D{metrics.simDay}</span>
           </span>
@@ -103,7 +103,7 @@ export default function HomePage() {
           </button>
 
           {/* Build/Maintain slider — full width on mobile */}
-          <div className="flex items-center gap-2 w-full lg:w-auto">
+          <div className="flex items-center gap-2 w-full md:w-auto">
             <span style={{ fontSize: '9px', color: '#4a5568', letterSpacing: '0.08em', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>
               BUILD
             </span>
@@ -117,7 +117,7 @@ export default function HomePage() {
                 setSliderValue(v);
                 setMaintainRatio(v / 100);
               }}
-              className="flex-1 lg:w-24"
+              className="flex-1 md:w-24"
               style={{ accentColor: '#e8ff3c', cursor: 'pointer' }}
             />
             <span style={{ fontSize: '9px', color: '#4a5568', letterSpacing: '0.08em', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>
@@ -236,7 +236,7 @@ export default function HomePage() {
 
       {/* ── Status bar ─────────────────────────────────────────────────────── */}
       <div
-        className="flex flex-wrap items-center gap-x-5 gap-y-1 px-4 lg:px-6 py-2 flex-shrink-0"
+        className="flex flex-wrap items-center gap-x-5 gap-y-1 px-4 md:px-6 py-2 flex-shrink-0"
         style={{
           borderTop: '1px solid #1e2530',
           background: '#0d1117',
@@ -248,7 +248,7 @@ export default function HomePage() {
         <StatusItem dot={status === 'running' ? 'active' : status === 'paused' ? 'warn' : 'idle'} label={status.toUpperCase()} />
         <StatusItem dot={roiDot} label={`ROI: ${metrics.roi >= 1.5 ? 'POSITIVE' : metrics.roi >= 1.0 ? 'MARGINAL' : 'NEGATIVE'} (${metrics.roi.toFixed(1)}x)`} />
         <StatusItem dot={entropyDot} label={`ENTROPY: ${metrics.burden < 30 ? 'NOMINAL' : metrics.burden < 60 ? 'ELEVATED' : 'CRITICAL'}`} />
-        <span className="hidden lg:inline" style={{ marginLeft: 'auto', color: '#4a5568' }}>ENTROPY SIMULATION v{process.env.NEXT_PUBLIC_APP_VERSION ?? '?'} — SOFTWARE ENTROPY MODEL</span>
+        <span className="hidden md:inline" style={{ marginLeft: 'auto', color: '#4a5568' }}>ENTROPY SIMULATION v{process.env.NEXT_PUBLIC_APP_VERSION ?? '?'} — SOFTWARE ENTROPY MODEL</span>
       </div>
     </main>
   );

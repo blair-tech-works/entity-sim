@@ -15,37 +15,37 @@ export default function MetricsPanel({ metrics }: MetricsPanelProps) {
   const valueMax = 5000;
 
   return (
-    <div className="lg:h-full" style={{ display: 'flex', flexDirection: 'column' }}>
+    <div className="metrics-panel lg:h-full" style={{ display: 'flex', flexDirection: 'column' }}>
       <MetricBlock
-        label="Total Functionality (Value)"
+        label="Value"
         value={Math.floor(totalValue).toLocaleString()}
         sub="story points delivered"
         color="#3cff8a"
         barWidth={Math.min(100, (totalValue / valueMax) * 100)}
       />
       <MetricBlock
-        label="Total Entropy (Drag)"
+        label="Entropy"
         value={Math.floor(totalEntropy).toLocaleString()}
-        sub="complexity units accumulated"
+        sub="complexity units"
         color="#ff8c3c"
         barWidth={Math.min(100, (totalEntropy / valueMax) * 100)}
       />
       <MetricBlock
-        label="ROI Ratio (Value/Cost)"
+        label="ROI"
         value={`${roi.toFixed(2)}x`}
         sub="breakeven at 1.0"
         color={roiColor}
         barWidth={Math.min(100, (roi / 3) * 100)}
       />
       <MetricBlock
-        label="Maintenance Burden"
+        label="Burden"
         value={`${burden.toFixed(1)}%`}
-        sub="of eng capacity consumed"
+        sub="eng capacity consumed"
         color={burdenColor}
         barWidth={burden}
       />
       <MetricBlock
-        label="Components / Engineers"
+        label="Nodes / Eng"
         value={`${nodeCount} / ${workerCount}`}
         sub={`Phase: ${PHASE_LABELS[phase]}`}
         color="#c9d1d9"
@@ -67,7 +67,7 @@ interface MetricBlockProps {
 
 function MetricBlock({ label, value, sub, color, barWidth, noBar }: MetricBlockProps) {
   return (
-    <div style={{
+    <div className="metric-block" style={{
       flex: '1 0 auto',
       padding: '14px 18px',
       borderBottom: '1px solid #1e2530',
@@ -75,15 +75,15 @@ function MetricBlock({ label, value, sub, color, barWidth, noBar }: MetricBlockP
       flexDirection: 'column',
       justifyContent: 'center',
     }}>
-      <div style={{ fontSize: '9px', letterSpacing: '0.14em', textTransform: 'uppercase', color: '#4a5568', marginBottom: '6px' }}>
+      <div className="metric-label" style={{ fontSize: '9px', letterSpacing: '0.14em', textTransform: 'uppercase', color: '#4a5568', marginBottom: '6px' }}>
         {label}
       </div>
-      <div style={{ fontSize: '26px', fontWeight: 800, lineHeight: 1, color, fontFamily: 'sans-serif' }}>
+      <div className="metric-value" style={{ fontSize: '26px', fontWeight: 800, lineHeight: 1, color, fontFamily: 'sans-serif' }}>
         {value}
       </div>
-      <div style={{ fontSize: '9px', color: '#4a5568', marginTop: '4px' }}>{sub}</div>
+      <div className="metric-sub" style={{ fontSize: '9px', color: '#4a5568', marginTop: '4px' }}>{sub}</div>
       {!noBar && (
-        <div style={{ height: '3px', background: '#1e2530', marginTop: '8px', position: 'relative', overflow: 'hidden' }}>
+        <div className="metric-bar" style={{ height: '3px', background: '#1e2530', marginTop: '8px', position: 'relative', overflow: 'hidden' }}>
           <div style={{
             height: '100%',
             width: `${barWidth}%`,
