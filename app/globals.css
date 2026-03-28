@@ -38,13 +38,14 @@ body {
   background: #1e2530;
 }
 
-/* Desktop: fixed 2×2 grid */
+/* Desktop: fixed 2×2 grid — min-height:0 is critical to allow fr rows to shrink */
 @media (min-width: 768px) {
   .sim-layout {
     display: grid;
     grid-template-columns: 1fr 340px;
-    grid-template-rows: 1fr 200px;
+    grid-template-rows: minmax(0, 1fr) 160px;
     overflow: hidden;
+    min-height: 0;
   }
 }
 
@@ -59,6 +60,7 @@ body {
 @media (min-width: 768px) {
   .sim-graph {
     min-height: 0;
+    overflow: hidden;
   }
 }
 
@@ -85,13 +87,14 @@ body {
   .minichart-row {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
-    overflow: visible;
+    overflow: hidden;
     min-height: 0;
-    height: 100%;
+    /* height is controlled by the parent grid row (160px) */
   }
   .minichart-row > * {
     flex: none;
     min-width: 0;
+    min-height: 0;
   }
 }
 
@@ -107,7 +110,9 @@ body {
 @media (min-width: 768px) {
   .event-log-container {
     max-height: none;
+    min-height: 0;
     height: 100%;
+    overflow-y: auto;
   }
 }
 
