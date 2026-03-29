@@ -7,6 +7,7 @@ import MetricsPanel from './components/simulation/MetricsPanel';
 import MiniChart from './components/simulation/MiniChart';
 import EventLog from './components/simulation/EventLog';
 import PhaseBanner from './components/simulation/PhaseBanner';
+import GraphLegend from './components/simulation/GraphLegend';
 import { DEFAULT_CONFIG } from './lib/constants';
 
 export default function HomePage() {
@@ -139,20 +140,7 @@ export default function HomePage() {
           </div>
           <GraphCanvas ref={graphRef} getState={getState} running={status === 'running'} />
           <PhaseBanner onRegister={onPhaseBanner} />
-          <div style={{ position: 'absolute', bottom: 14, right: 14, display: 'flex', flexDirection: 'column', gap: 5 }}>
-            {[
-              { color: '#3cb8ff', label: 'New Component' },
-              { color: '#3cff8a', label: 'Healthy' },
-              { color: '#e8ff3c', label: 'Moderate Debt' },
-              { color: '#ff8c3c', label: 'High Entropy' },
-              { color: '#ff3c3c', label: 'Critical' },
-            ].map(({ color, label }) => (
-              <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 7, fontSize: 9, color: '#4a5568' }}>
-                <div style={{ width: 8, height: 8, borderRadius: '50%', background: color, flexShrink: 0 }} />
-                {label}
-              </div>
-            ))}
-          </div>
+          <GraphLegend />
         </div>
 
         {/* Metrics panel */}
@@ -223,7 +211,7 @@ export default function HomePage() {
               <li><strong style={{ color: '#c9d1d9' }}>Defect rates:</strong> Capers Jones — 0.5 bugs/feature, 7% fix regression</li>
               <li><strong style={{ color: '#c9d1d9' }}>Maintenance:</strong> Gartner — grows from 15% to 35% over lifecycle</li>
               <li><strong style={{ color: '#c9d1d9' }}>Productivity:</strong> Chalmers University (Besker et al., 2019) — 23% loss to tech debt</li>
-              <li><strong style={{ color: '#c9d1d9' }}>Code growth:</strong> Herraiz et al. — codebases double every 42 months</li>
+              <li><strong style={{ color: '#c9d1d9' }}>Code growth:</strong> Hatton, Spinellis &amp; van Genuchten (2017) — codebases double every 42 months</li>
               <li><strong style={{ color: '#c9d1d9' }}>Defect density:</strong> IEEE (109 OSS projects) — 7.47 defects/KLOC mean</li>
               <li><strong style={{ color: '#c9d1d9' }}>Entropy:</strong> ArXiv 2504.18511 — 0.54 correlation entropy↔defects</li>
               <li><strong style={{ color: '#c9d1d9' }}>Performance:</strong> DORA/Accelerate — elite: &lt;5% vs low: 46-60% failure rate</li>
