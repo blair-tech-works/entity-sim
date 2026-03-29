@@ -42,7 +42,7 @@ body {
 @media (min-width: 1024px) {
   .sim-layout {
     display: grid;
-    grid-template-columns: 1fr 340px;
+    grid-template-columns: 1fr 240px;
     grid-template-rows: minmax(0, 1fr) 160px;
     overflow: hidden;
     min-height: 0;

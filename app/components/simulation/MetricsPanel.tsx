@@ -17,30 +17,30 @@ export default function MetricsPanel({ metrics }: MetricsPanelProps) {
   return (
     <div className="lg:h-full" style={{ display: 'flex', flexDirection: 'column' }}>
       <MetricBlock
-        label="Total Functionality (Value)"
+        label="Value"
         value={Math.floor(totalValue).toLocaleString()}
-        sub="story points delivered"
+        sub="story pts"
         color="#3cff8a"
         barWidth={Math.min(100, (totalValue / valueMax) * 100)}
       />
       <MetricBlock
-        label="Total Entropy (Drag)"
+        label="Entropy"
         value={Math.floor(totalEntropy).toLocaleString()}
-        sub="complexity units accumulated"
+        sub="complexity"
         color="#ff8c3c"
         barWidth={Math.min(100, (totalEntropy / valueMax) * 100)}
       />
       <MetricBlock
-        label="ROI Ratio (Value/Cost)"
+        label="ROI"
         value={`${roi.toFixed(2)}x`}
-        sub="breakeven at 1.0"
+        sub="breakeven 1.0"
         color={roiColor}
         barWidth={Math.min(100, (roi / 3) * 100)}
       />
       <MetricBlock
-        label="Maintenance Burden"
+        label="Burden"
         value={`${burden.toFixed(1)}%`}
-        sub="of eng capacity consumed"
+        sub="eng capacity"
         color={burdenColor}
         barWidth={burden}
       />
@@ -69,21 +69,28 @@ function MetricBlock({ label, value, sub, color, barWidth, noBar }: MetricBlockP
   return (
     <div style={{
       flex: '1 0 auto',
-      padding: '14px 18px',
+      padding: '8px 14px',
       borderBottom: '1px solid #1e2530',
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'center',
     }}>
-      <div style={{ fontSize: '9px', letterSpacing: '0.14em', textTransform: 'uppercase', color: '#4a5568', marginBottom: '6px' }}>
-        {label}
+      <div style={{
+        display: 'flex',
+        alignItems: 'baseline',
+        gap: 8,
+        marginBottom: noBar ? 0 : 4,
+      }}>
+        <div style={{ fontSize: '20px', fontWeight: 800, lineHeight: 1, color, fontFamily: 'sans-serif' }}>
+          {value}
+        </div>
+        <div style={{ fontSize: '8px', letterSpacing: '0.12em', textTransform: 'uppercase', color: '#4a5568' }}>
+          {label}
+        </div>
       </div>
-      <div style={{ fontSize: '26px', fontWeight: 800, lineHeight: 1, color, fontFamily: 'sans-serif' }}>
-        {value}
-      </div>
-      <div style={{ fontSize: '9px', color: '#4a5568', marginTop: '4px' }}>{sub}</div>
+      <div style={{ fontSize: '8px', color: '#3a3f47' }}>{sub}</div>
       {!noBar && (
-        <div style={{ height: '3px', background: '#1e2530', marginTop: '8px', position: 'relative', overflow: 'hidden' }}>
+        <div style={{ height: '2px', background: '#1e2530', marginTop: '5px', position: 'relative', overflow: 'hidden' }}>
           <div style={{
             height: '100%',
             width: `${barWidth}%`,

@@ -155,9 +155,9 @@ export default function GraphLegend() {
         position: 'absolute',
         bottom: 10,
         right: 10,
+        top: expanded ? 10 : 'auto',
         zIndex: 5,
         maxWidth: expanded ? 520 : 200,
-        maxHeight: expanded ? '80%' : 'auto',
         background: expanded ? 'rgba(13, 17, 23, 0.95)' : 'rgba(13, 17, 23, 0.75)',
         border: '1px solid #1e2530',
         borderRadius: 6,
@@ -250,6 +250,8 @@ export default function GraphLegend() {
       {/* ── Expanded: Research Panel ─────────────────────────────────────── */}
       {expanded && (
         <div style={{
+          flex: 1,
+          minHeight: 0,
           overflowY: 'auto',
           padding: '0 14px 14px',
           borderTop: '1px solid #27272a',
