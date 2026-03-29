@@ -1,12 +1,13 @@
 'use client';
 
-import { useRef, useState, useEffect, useCallback } from 'react';
+import { useRef, useState, useEffect, useCallback, useMemo } from 'react';
 import { useSimulation } from './hooks/useSimulation';
 import GraphCanvas, { type GraphCanvasHandle } from './components/simulation/GraphCanvas';
 import MetricsPanel from './components/simulation/MetricsPanel';
 import MiniChart from './components/simulation/MiniChart';
 import EventLog from './components/simulation/EventLog';
 import PhaseBanner from './components/simulation/PhaseBanner';
+import ConceptsModal from './components/simulation/ConceptsModal';
 import { DEFAULT_CONFIG } from './lib/constants';
 
 export default function HomePage() {
@@ -16,6 +17,20 @@ export default function HomePage() {
   const realStartRef = useRef<number>(0);
   const [sliderValue, setSliderValue] = useState(Math.round(maintainRatio * 100));
   const [showRefs, setShowRefs] = useState(false);
+  const [showConcepts, setShowConcepts] = useState(false);
+  const [maintainWarning, setMaintainWarning] = useState<string | null>(null);
+  const warnTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Live entropy trend from chart history (every 20 ticks = 1 history point)
+  const entropyTrend = useMemo(() => {
+    const e = history.entropy;
+    if (e.length < 5) return null;
+    const delta = (e[e.length - 1] - e[e.length - 5]) / 4;
+    if (delta < 0)   return { label: 'DECLINING',     color: '#3cff8a', dot: 'active' as const };
+    if (delta < 1)   return { label: 'STABLE',         color: '#e8ff3c', dot: 'warn' as const };
+    if (delta < 8)   return { label: 'GROWING',        color: '#ff8c3c', dot: 'warn' as const };
+    return             { label: 'ACCELERATING',   color: '#ff3c3c', dot: 'crit' as const };
+  }, [history.entropy]);
 
   useEffect(() => {
     if (status === 'running') {
@@ -116,6 +131,22 @@ export default function HomePage() {
                 const v = Number(e.target.value);
                 setSliderValue(v);
                 setMaintainRatio(v / 100);
+                // Phase-aware warning
+                if (status === 'running') {
+                  let msg: string | null = null;
+                  if (metrics.phase >= 3) {
+                    msg = 'Entropy crisis — structural debt 4× baseline. Maintenance can no longer keep pace.';
+                  } else if (metrics.phase >= 2) {
+                    msg = 'Phase 2+: structural debt is locked in. Maintenance slows growth but cannot reverse it.';
+                  } else if (metrics.phase === 1 && v < 25) {
+                    msg = 'Inflection point active — ≥25% maintenance now recommended to avoid a debt spiral.';
+                  }
+                  if (msg) {
+                    setMaintainWarning(msg);
+                    if (warnTimerRef.current) clearTimeout(warnTimerRef.current);
+                    warnTimerRef.current = setTimeout(() => setMaintainWarning(null), 5000);
+                  }
+                }
               }}
               className="flex-1 md:w-24"
               style={{ accentColor: '#e8ff3c', cursor: 'pointer' }}
@@ -123,12 +154,64 @@ export default function HomePage() {
             <span style={{ fontSize: '9px', color: '#4a5568', letterSpacing: '0.08em', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>
               MAINTAIN
             </span>
-            <span style={{ fontSize: '10px', color: '#e8ff3c', fontWeight: 700, minWidth: 32, textAlign: 'center' }}>
-              {sliderValue}%
-            </span>
+            {/* Slider % + live entropy trend badge */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, minWidth: 80 }}>
+              <span style={{ fontSize: '10px', color: '#e8ff3c', fontWeight: 700, minWidth: 28, textAlign: 'center' }}>
+                {sliderValue}%
+              </span>
+              {entropyTrend && (
+                <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                  <div style={{ width: 5, height: 5, borderRadius: '50%', background: entropyTrend.color, boxShadow: `0 0 5px ${entropyTrend.color}` }} />
+                  <span style={{ fontSize: '8px', color: entropyTrend.color, letterSpacing: '0.08em', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>
+                    {entropyTrend.label}
+                  </span>
+                </div>
+              )}
+            </div>
+            {/* Concepts / formula reference button */}
+            <button
+              onClick={() => setShowConcepts(true)}
+              title="Concepts & Formulas"
+              style={{
+                background: 'transparent',
+                border: '1px solid #1e2530',
+                color: '#4a5568',
+                fontSize: '10px',
+                fontFamily: 'monospace',
+                width: 22,
+                height: 22,
+                cursor: 'pointer',
+                flexShrink: 0,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                letterSpacing: 0,
+              }}
+            >
+              ?
+            </button>
           </div>
         </div>
       </header>
+
+      {/* ── Maintenance warning banner ─────────────────────────────────────── */}
+      {maintainWarning && (
+        <div style={{
+          padding: '6px 24px',
+          background: '#120a00',
+          borderBottom: '1px solid #ff8c3c44',
+          fontSize: '10px',
+          color: '#ff8c3c',
+          letterSpacing: '0.05em',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 8,
+          flexShrink: 0,
+        }}>
+          <span style={{ fontSize: 11 }}>⚠</span>
+          {maintainWarning}
+        </div>
+      )}
 
       {/* ── Main grid ──────────────────────────────────────────────────────── */}
       <div className="sim-layout">
@@ -251,6 +334,11 @@ export default function HomePage() {
         <span className="hidden md:inline" style={{ marginLeft: 'auto', color: '#4a5568' }}>ENTROPY SIMULATION v1.0 — SOFTWARE ENTROPY MODEL</span>
       </div>
 
+      <ConceptsModal
+        open={showConcepts}
+        onClose={() => setShowConcepts(false)}
+        currentPhase={metrics.phase}
+      />
     </main>
   );
 }
