@@ -12,6 +12,7 @@ export default function MetricsPanel({ metrics }: MetricsPanelProps) {
 
   const roiColor = roi >= 1.5 ? '#3cff8a' : roi >= 1.0 ? '#e8ff3c' : '#ff3c3c';
   const burdenColor = burden < 30 ? '#3cff8a' : burden < 60 ? '#ff8c3c' : '#ff3c3c';
+  const valueMax = 5000;
 
   return (
     <div className="lg:h-full" style={{ display: 'flex', flexDirection: 'column' }}>
@@ -55,7 +56,16 @@ export default function MetricsPanel({ metrics }: MetricsPanelProps) {
   );
 }
 
-function Cell({ label, value, color }: { label: string; value: string; color: string }) {
+interface MetricBlockProps {
+  label: string;
+  value: string;
+  sub: string;
+  color: string;
+  barWidth: number;
+  noBar?: boolean;
+}
+
+function MetricBlock({ label, value, sub, color, barWidth, noBar }: MetricBlockProps) {
   return (
     <div style={{
       flex: '1 0 auto',
