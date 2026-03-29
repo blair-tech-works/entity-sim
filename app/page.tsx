@@ -83,7 +83,7 @@ export default function HomePage() {
             ⬡ Entropy
           </span>
           <span style={{ fontSize: '9px', color: '#4a5568', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
-            5yr Horizon
+            v{process.env.NEXT_PUBLIC_APP_VERSION ?? '?'} — 5yr Horizon
           </span>
         </div>
 

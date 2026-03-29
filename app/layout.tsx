@@ -1,8 +1,10 @@
 import type { Metadata } from 'next';
 import './globals.css';
 
+const appVersion = process.env.NEXT_PUBLIC_APP_VERSION ?? '?';
+
 export const metadata: Metadata = {
-  title: 'Entropy — Software Complexity Simulation',
+  title: `Entropy v${appVersion} — Software Complexity Simulation`,
   description: 'Watch software entropy compound over a simulated 5-year horizon. Visualizes how growing codebases accumulate complexity until maintenance costs exceed value delivered.',
 };
 
