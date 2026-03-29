@@ -37,7 +37,19 @@ body {
   gap: 1px;
 }
 
-/* Graph: takes ALL remaining space */
+/* Desktop (≥1024px): fixed 2×2 grid — iPads get stacked mobile layout */
+@media (min-width: 1024px) {
+  .sim-layout {
+    display: grid;
+    grid-template-columns: 1fr 240px;
+    grid-template-rows: minmax(0, 1fr) 160px;
+    overflow: hidden;
+    min-height: 0;
+  }
+}
+
+/* ── Simulation graph container ───────────────────────────────────────────── */
+
 .sim-graph {
   position: relative;
   flex: 1 1 0;            /* grow to fill, shrink if needed, basis 0 */

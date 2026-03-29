@@ -12,27 +12,96 @@ export default function MetricsPanel({ metrics }: MetricsPanelProps) {
 
   const roiColor = roi >= 1.5 ? '#3cff8a' : roi >= 1.0 ? '#e8ff3c' : '#ff3c3c';
   const burdenColor = burden < 30 ? '#3cff8a' : burden < 60 ? '#ff8c3c' : '#ff3c3c';
+  const valueMax = 5000;
 
   return (
-    <div className="metrics-strip">
-      <Cell label="VALUE" value={Math.floor(totalValue).toLocaleString()} color="#3cff8a" />
-      <Cell label="ENTROPY" value={Math.floor(totalEntropy).toLocaleString()} color="#ff8c3c" />
-      <Cell label="ROI" value={`${roi.toFixed(2)}x`} color={roiColor} />
-      <Cell label="BURDEN" value={`${burden.toFixed(1)}%`} color={burdenColor} />
-      <Cell label={PHASE_LABELS[phase] ?? 'GROWTH'} value={`${nodeCount}/${workerCount}`} color="#c9d1d9" />
+    <div className="lg:h-full" style={{ display: 'flex', flexDirection: 'column' }}>
+      <MetricBlock
+        label="Value"
+        value={Math.floor(totalValue).toLocaleString()}
+        sub="story pts"
+        color="#3cff8a"
+        barWidth={Math.min(100, (totalValue / valueMax) * 100)}
+      />
+      <MetricBlock
+        label="Entropy"
+        value={Math.floor(totalEntropy).toLocaleString()}
+        sub="complexity"
+        color="#ff8c3c"
+        barWidth={Math.min(100, (totalEntropy / valueMax) * 100)}
+      />
+      <MetricBlock
+        label="ROI"
+        value={`${roi.toFixed(2)}x`}
+        sub="breakeven 1.0"
+        color={roiColor}
+        barWidth={Math.min(100, (roi / 3) * 100)}
+      />
+      <MetricBlock
+        label="Burden"
+        value={`${burden.toFixed(1)}%`}
+        sub="eng capacity"
+        color={burdenColor}
+        barWidth={burden}
+      />
+      <MetricBlock
+        label="Components / Engineers"
+        value={`${nodeCount} / ${workerCount}`}
+        sub={`Phase: ${PHASE_LABELS[phase]}`}
+        color="#c9d1d9"
+        barWidth={0}
+        noBar
+      />
     </div>
   );
 }
 
-function Cell({ label, value, color }: { label: string; value: string; color: string }) {
+interface MetricBlockProps {
+  label: string;
+  value: string;
+  sub: string;
+  color: string;
+  barWidth: number;
+  noBar?: boolean;
+}
+
+function MetricBlock({ label, value, sub, color, barWidth, noBar }: MetricBlockProps) {
   return (
-    <div className="metric-cell">
-      <div style={{ fontSize: '7px', letterSpacing: '0.12em', color: '#4a5568', lineHeight: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '100%' }}>
-        {label}
+    <div style={{
+      flex: '1 0 auto',
+      padding: '8px 14px',
+      borderBottom: '1px solid #1e2530',
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+    }}>
+      <div style={{
+        display: 'flex',
+        alignItems: 'baseline',
+        gap: 8,
+        marginBottom: noBar ? 0 : 4,
+      }}>
+        <div style={{ fontSize: '20px', fontWeight: 800, lineHeight: 1, color, fontFamily: 'sans-serif' }}>
+          {value}
+        </div>
+        <div style={{ fontSize: '8px', letterSpacing: '0.12em', textTransform: 'uppercase', color: '#4a5568' }}>
+          {label}
+        </div>
       </div>
-      <div style={{ fontSize: '16px', fontWeight: 800, lineHeight: 1.2, color, fontFamily: 'sans-serif', whiteSpace: 'nowrap' }}>
-        {value}
-      </div>
+      <div style={{ fontSize: '8px', color: '#3a3f47' }}>{sub}</div>
+      {!noBar && (
+        <div style={{ height: '2px', background: '#1e2530', marginTop: '5px', position: 'relative', overflow: 'hidden' }}>
+          <div style={{
+            height: '100%',
+            width: `${barWidth}%`,
+            background: color,
+            transition: 'width 0.4s ease',
+            position: 'absolute',
+            left: 0,
+            top: 0,
+          }} />
+        </div>
+      )}
     </div>
   );
 }
